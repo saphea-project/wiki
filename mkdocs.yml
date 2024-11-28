@@ -1,0 +1,59 @@
+site_name: Saphea Wiki
+site_url: https://github.com/saphea-project/wiki/
+repo_url: https://github.com/saphea-project/wiki/wiki
+edit_uri_template: '{path_noext}/_edit'  # https://www.mkdocs.org/user-guide/configuration/#edit_uri_template
+# hooks:
+#   - change_edit_url.py
+#   - add_id_to_first_h1.py
+# extra_css:
+#   - custom.css
+markdown_extensions:
+  - pymdownx.magiclink  # Convert bare URLs into hyperlinks
+  - attr_list  # Allow setting attributes on block elements
+plugins:
+  - search
+extra:
+  generator: false  # Hide "Made with Material for MkDocs"
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/saphea-project/
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/SAPHEA_EU
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/saphea-horizon-eu
+theme:
+  name: material
+  font:
+    text: Ubuntu
+    code: Ubuntu Mono
+  # favicon: https://raw.githubusercontent.com/saphea-project/.github/main/logo.png
+  # logo: https://raw.githubusercontent.com/saphea-project/.github/main/logo.png
+  icon:
+    repo: fontawesome/brands/github
+    # edit: material/file-edit-outline
+  features:
+    - content.action.edit  # Show Edit Page
+    - navigation.top  # Show "Back to Top" on scrolling
+    # - navigation.expand  # Expand left menu sections
+    - navigation.footer  # Show footer navigation
+  user_color_mode_toggle: true
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+# nav:
+#   - "Wiki Introduction":
+#     - welcome-page.md
+#     - how-to-edit-this-wiki.md
