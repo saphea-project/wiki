@@ -1,4 +1,4 @@
-site_name: Saphea Wiki
+site_name: SAPHEA Project Wiki
 site_url: https://github.com/saphea-project/wiki/
 repo_url: https://github.com/saphea-project/wiki/wiki
 edit_uri_template: '{path_noext}/_edit'  # https://www.mkdocs.org/user-guide/configuration/#edit_uri_template
