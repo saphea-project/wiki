@@ -9,7 +9,7 @@
 
 /* Hide "GitHub" text */
 .md-source__repository {
-    display: none;
+    /* display: none; */
 }
 
 /* Hide link to GitHub repository */
