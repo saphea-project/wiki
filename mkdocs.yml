@@ -5,8 +5,8 @@ edit_uri_template: '{path_noext}/_edit'  # https://www.mkdocs.org/user-guide/con
 # hooks:
 #   - change_edit_url.py
 #   - add_id_to_first_h1.py
-# extra_css:
-#   - custom.css
+extra_css:
+  - style.css
 markdown_extensions:
   - pymdownx.magiclink  # Convert bare URLs into hyperlinks
   - attr_list  # Allow setting attributes on block elements
