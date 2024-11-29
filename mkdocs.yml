@@ -26,8 +26,9 @@ theme:
   font:
     text: Ubuntu
     code: Ubuntu Mono
-  favicon: https://raw.githubusercontent.com/saphea-project/wiki/assets/logo.png
-  logo: https://raw.githubusercontent.com/saphea-project/wiki/assets/logo.png
+  # favicon: https://raw.githubusercontent.com/saphea-project/wiki/assets/logo.png
+  favicon: https://raw.githubusercontent.com/saphea-project/wiki/refs/heads/main/assets/logo.png
+  logo: https://raw.githubusercontent.com/saphea-project/wiki/refs/heads/main/assets/logo.png
   icon:
     repo: fontawesome/brands/github
     # edit: material/file-edit-outline
