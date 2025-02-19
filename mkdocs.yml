@@ -54,7 +54,29 @@ theme:
         icon: material/weather-night
         name: Switch to light mode
 
-# nav:
-#   - "Wiki Introduction":
-#     - welcome-page.md
-#     - how-to-edit-this-wiki.md
+nav:
+  - "Wiki Introduction":
+    - welcome-page.md
+  - "Getting Started":
+    - welcome-to-saphea.md
+  - "Datasets":
+    - geothermal-paneuropean-datasets.md
+  - "SAPHEA Tool Overview and User Guide":
+    - key-capabilities.md
+    - user-interface-navigation.md
+    - core-functions.md
+    - general-workflow.md
+  - "Calculation Modules of the SAPHEA Tool":
+    - cm-district-heating-potential-areas.md
+    - cm-district-heating-supply.md
+    - cm-district-heating-economic-assessment.md
+    - cm-district-cooling.md
+    - cm-shalow-geothermal-potential.md
+    - cm-geophyres.md
+    - cm-ground-source-heat-pump.md
+  - "How to Apply the SAPHEA Tool":
+    - guideline-how-to-assess-geaothermal-potential.md
+    - single-market-uptake-hub.md
+    - gamebook.md
+  - "Learning Center":
+    - training-material.md
