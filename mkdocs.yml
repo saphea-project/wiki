@@ -56,8 +56,6 @@ theme:
 
 nav:
   - "Wiki Introduction":
-    - welcome-page.md
-  - "Getting Started":
     - welcome-to-saphea.md
   - "Datasets":
     - geothermal-paneuropean-datasets.md
