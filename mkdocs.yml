@@ -68,10 +68,8 @@ nav:
     - cm-district-heating-potential-areas.md
     - cm-district-heating-supply.md
     - cm-district-heating-economic-assessment.md
-    - cm-district-cooling.md
-    - cm-shallow-geothermal-potential.md
-    - cm-geophyres.md
-    - cm-ground-source-heat-pump.md
+    - cm-large-scale-shallow-geothermal-heat-pump.md
+    - cm-geophires.md
   - "How to Apply the SAPHEA Tool":
     - guideline-how-to-assess-geothermal-potential.md
     - single-market-uptake-hub.md
