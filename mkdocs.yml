@@ -65,12 +65,14 @@ nav:
     - core-functions.md
     - general-workflow.md
   - "Calculation Modules of the SAPHEA Tool":
-    - cm-district-heating-potential-areas.md
-    - cm-district-heating-supply.md
-    - cm-district-heating-economic-assessment.md
-    - cm-shallow-geothermal-potential.md
-    - cm-geophires.md
-    - cm-large-scale-geothermal-heat-pump.md
+    - "District Heating and Cooling":
+      - cm-district-heating-potential-areas.md
+      - cm-district-heating-supply.md
+      - cm-district-heating-economic-assessment.md
+    - "Demand":
+      - cm-shallow-geothermal-potential.md
+      - cm-geophires.md
+      - cm-large-scale-geothermal-heat-pump.md
   - "How to Apply the SAPHEA Tool":
     - guideline-how-to-assess-geothermal-potential.md
     - single-market-uptake-hub.md
