@@ -67,8 +67,8 @@ nav:
   - "Calculation Modules of the SAPHEA Tool":
     - "District Heating and Cooling":
       - cm-district-heating-potential-areas.md
-      - cm-district-heating-supply.md
       - cm-district-heating-economic-assessment.md
+      - cm-district-heating-supply.md
     - "Demand":
       - cm-shallow-geothermal-potential.md
       - cm-geophires.md
