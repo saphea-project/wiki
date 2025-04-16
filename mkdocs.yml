@@ -58,7 +58,7 @@ nav:
   - "Wiki Introduction":
     - welcome-to-saphea.md
   - "Datasets":
-    - geothermal-paneuropean-datasets.md
+    - pan-european-datasets.md
   - "SAPHEA Tool Overview and User Guide":
     - key-capabilities.md
     - user-interface-navigation.md
