@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heat Pump Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        .header { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .header img { height: 50px; margin-right: 10px; }
+        .description { margin-bottom: 20px; font-size: 16px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .container { max-width: 1000px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        input, button, select { width: 40%; margin: 5px 0; padding: 10px; }
+      	.input-group {display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; position: relative; text-align: center;  }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .tooltip { display: none; position: absolute; background-color: #333; color: #fff; padding: 5px; border-radius: 5px; font-size: 12px; left: 105%; top: 0; white-space: nowrap; }
+        .tooltip-icon { cursor: pointer; font-size: 14px; margin-left: 5px; background-color: #ddd; border-radius: 50%; padding: 2px 5px; }
+        .tooltip-icon:hover + .tooltip { display: block; }
+        .results { margin-top: 20px; padding: 10px; border-top: 1px solid #ddd; }
+        .warning { color: red; display: none; margin-top: 10px; }
+        .invalid { border: 2px solid red; }
+        .image-container { display: flex; justify-content: center; margin-bottom: 20px; }
+        .image-container img { width: 70%; max-width: 500;  height: auto; }
+        .module-selection {    width: 100%;    max-width: 1000px;    margin: 0 auto 20px auto;}
+        .module-options { display: flex; justify-content: center; gap: 20px; }
+        .module-option { width: 280px; padding: 15px; border: 2px solid #ddd; border-radius: 10px; text-align: center; cursor: pointer; }
+        .module-option img { width: 100%; border-radius: 5px; }
+        .selected { border-color: #007BFF; background-color: #e6f0ff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://www.egec.org/wp-content/uploads/research_projects/saphea-logo-rgb-300dpi-768x227.png" alt="SAPHEA Logo">
+        <h2>Large-scale geothermal heat pumps in district heating: LSGeoHP</h2>
+    </div>
+    
+    <p class="description">Assess the application potential of large-scale geothermal heat pumps for your potential project. Learn more about the integration options in the SAPHEA wiki.</p>
+    
+    <div class="image-container">
+        <img src="https://www.epe.ed.tum.de/fileadmin/w00bzo/es/pictures/Forschung/SAPHEA_Dummy_tools.png" alt="Heat Pump Integration Options">
+    </div>
+    
+    <div class="module-selection">
+        <h3>Choose your calculation module</h3>
+        <div class="module-options">
+            <div class="module-option" id="option-direct-use" onclick="selectModule('direct-use')">
+                <p><strong>Direct Use</strong></p>
+				<p>Assessing the feasibility and capacity for direct-use without heat pump</p>
+                <button>Select</button>
+            </div>
+            <div class="module-option" id="option-capacity-increase" onclick="selectModule('capacity-increase')">
+                <p><strong>Capacity Increase</strong></p>
+                <p>Increasing the thermal capacity by installing a large-scale heat pump</p>
+                <button>Select</button>
+            </div>
+            <div class="module-option" id="option-temperature-increase" onclick="selectModule('temperature-increase')">
+                <p><strong>Temperature Increase</strong></p>
+                <p>Utilizing insufficient temperatures by installing a large-scale heat pump</p>
+                <button>Select</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="inputFields"></div>
+    <p id="warning" class="warning"></p>
+    <button id="calculateButton" onclick="calculate()" disabled>Calculate</button>
+    <div class="results" id="results"></div>
+	
+<!--
+<div class="slider-container">
+    <label for="maxHeatDemand">Maximum Heating Demand (MW):</label>
+    <input type="range" id="maxHeatDemand" min="10" max="300" value="150" step="5" oninput="updateHeatDemand()">
+    <span id="heatDemandValue">150 MW</span>
+</div>
+<canvas id="heatDemandChart"></canvas>
+-->
+
+
+    <script>
+		
+		function selectModule(module) {
+			// Remove the 'selected' class from all options
+			document.querySelectorAll('.module-option').forEach(el => el.classList.remove('selected'));
+			
+			// Add 'selected' class to the clicked option
+			document.getElementById(`option-${module}`).classList.add('selected');
+
+			// Update input fields based on the selected module
+			updateInputs(module);
+
+			// ✅ Clear warning message when switching modules
+			let warning = document.getElementById("warning");
+			warning.innerText = "";  // Remove warning text
+			warning.style.display = "none"; // Hide warning
+
+			// ✅ Disable Calculate button when switching modules (until new inputs are valid)
+			document.getElementById("calculateButton").disabled = true;
+		}
+
+        function updateInputs(module) {
+            let inputDiv = document.getElementById("inputFields");
+            inputDiv.innerHTML = "";
+            
+            if (module === "direct-use") {
+                addInputField(inputDiv, "massFlow", "Geothermal brine mass flow rate", "kg/s", "Enter value - e.g. 80 kg/s");
+                addInputField(inputDiv, "tempProd", "Geothermal production temperature", "°C", "Enter value - e.g. 100 °C");
+                addInputFieldWithTooltip(inputDiv, "tempInject", "Geothermal injection temperature", "°C", "Enter value - e.g. 65 °C", "Normally the injection temperature will be slightly higher (e.g. 2 - 5 K) than the DHN temperature, depending on the actual heat exchanger design.");
+                addInputField(inputDiv, "tempDhnSupply", "DHN supply temperature", "°C", "Enter value - e.g. 85 °C");
+                addInputField(inputDiv, "tempDhnReturn", "DHN return temperature", "°C", "Enter value - e.g. 60 °C");
+            }
+			
+			if (module === "capacity-increase") {
+                addInputField(inputDiv, "massFlow", "Geothermal brine mass flow rate", "kg/s", "Enter value - e.g. 80 kg/s");
+                addInputField(inputDiv, "tempProd", "Geothermal production temperature", "°C", "Enter value - e.g. 100 °C");
+				addInputField(inputDiv, "tempInjectwoHP", "Geothermal injection temperature without a heat pump (optional)", "°C", "Enter value - e.g. 70 °C");
+                addInputField(inputDiv, "tempInject", "Minimal feasibe geothermal injection temperature", "°C", "Enter value - e.g. 40 °C");
+                addInputField(inputDiv, "tempDhnSupply", "DHN supply temperature", "°C", "Enter value - e.g. 85 °C");
+                addInputField(inputDiv, "tempDhnReturn", "DHN return temperature", "°C", "Enter value - e.g. 60 °C");
+            }
+			
+			if (module === "temperature-increase") {
+                addInputField(inputDiv, "massFlow", "Geothermal brine mass flow rate", "kg/s", "Enter value - e.g. 80 kg/s");
+                addInputField(inputDiv, "tempProd", "Geothermal production temperature", "°C", "Enter value - e.g. 70 °C");
+                addInputField(inputDiv, "tempInject", "Minimal feasibe geothermal injection temperature", "°C", "Enter value - e.g. 40 °C");
+                addInputField(inputDiv, "tempDhnSupply", "DHN supply temperature", "°C", "Enter value - e.g. 85 °C");
+                addInputField(inputDiv, "tempDhnReturn", "DHN return temperature", "°C", "Enter value - e.g. 60 °C");
+            }
+			
+        }
+
+        function addInputField(container, id, label, unit, placeholderText) {
+            let div = document.createElement("div");
+            div.className = "input-group";
+            div.innerHTML = `<label for="${id}">${label} (${unit})</label>` +
+                `<input type="number" id="${id}" placeholder="${placeholderText}" oninput="validateInputs()">`;
+            container.appendChild(div);
+        }
+
+        function addInputFieldWithTooltip(container, id, label, unit, placeholderText, tooltipText) {
+            let div = document.createElement("div");
+            div.className = "input-group";
+            div.innerHTML = `<label for="${id}">${label} (${unit}) <span class="tooltip-icon">?</span><span class="tooltip">${tooltipText}</span></label>` +
+                `<input type="number" id="${id}" placeholder="${placeholderText}" oninput="validateInputs()">`;
+            container.appendChild(div);
+        }
+
+		function validateInputs() {
+			let prodTemp = document.getElementById("tempProd")?.value;
+			let injectTemp = document.getElementById("tempInject")?.value;
+			let dhnSupply = document.getElementById("tempDhnSupply")?.value;
+			let dhnReturn = document.getElementById("tempDhnReturn")?.value;
+			let warning = document.getElementById("warning");
+			let calculateButton = document.getElementById("calculateButton");
+			
+			let invalidMessage = "";
+			let selectedModule = document.querySelector('.module-option.selected');
+
+			if (!selectedModule) {
+				warning.innerText = "Please select a module first!";
+				warning.style.display = "block";
+				calculateButton.disabled = true;
+				return;
+			}
+
+			let moduleId = selectedModule.id;
+			
+			 // ✅ Check for negative values
+			if (prodTemp < 0 || injectTemp < 0 || dhnSupply < 0 || dhnReturn < 0 || massFlow < 0) {
+			invalidMessage = "Warning: All values must be positive.";
+			}
+
+
+			if (moduleId === "option-direct-use") {
+				// ✅ Direct-use validity checks
+				if (prodTemp && injectTemp && parseFloat(prodTemp) <= parseFloat(injectTemp)) {
+					invalidMessage = "Warning: The geothermal injection temperature needs to be lower than the production temperature.";
+				}
+				if (dhnSupply && dhnReturn && parseFloat(dhnSupply) <= parseFloat(dhnReturn)) {
+					invalidMessage = "Warning: The DHN return temperature needs to be lower than the DHN supply temperature.";
+				}
+				if (injectTemp && dhnReturn && parseFloat(injectTemp) <= parseFloat(dhnReturn)) {
+					invalidMessage = "Warning: The injection temperature cannot be lower than the DHN return temperature.";
+				}
+
+			} else if (moduleId === "option-capacity-increase") {
+				// ✅ Capacity-increase validity checks
+				if (prodTemp && injectTemp && parseFloat(prodTemp) <= parseFloat(injectTemp)) {
+					invalidMessage = "Warning: The geothermal injection temperature needs to be lower than the production temperature.";
+				}
+				if (dhnSupply && dhnReturn && parseFloat(dhnSupply) <= parseFloat(dhnReturn)) {
+					invalidMessage = "Warning: The DHN return temperature needs to be lower than the DHN supply temperature.";
+				}
+				if (dhnSupply && prodTemp && parseFloat(prodTemp) <= parseFloat(dhnSupply)) {
+					invalidMessage = "Warning: Geothermal production temperature not sufficient for the DHN suppply temperature. Please use the temperature increase module.";
+
+                        // NEW: Validate injection temperature without heat pump
+                const tempInjectwoHPField = document.getElementById("tempInjectwoHP")?.value;
+                const tempInjectwoHP = tempInjectwoHPField === "" ? parseFloat(dhnReturn) + 2 : parseFloat(tempInjectwoHPField);
+
+                if (prodTemp && tempInjectwoHP && parseFloat(tempInjectwoHP) > parseFloat(prodTemp)) {
+                    invalidMessage = "Warning: The geothermal injection temperature without heat pump cannot exceed the production temperature.";
+                }
+
+				}
+
+			} else if (moduleId === "option-temperature-increase") {
+				// ✅ Temperature-increase validity checks
+				if (prodTemp && injectTemp && parseFloat(prodTemp) <= parseFloat(injectTemp)) {
+					invalidMessage = "Warning: The geothermal injection temperature needs to be lower than the production temperature.";
+				}
+				if (dhnSupply && dhnReturn && parseFloat(dhnSupply) <= parseFloat(dhnReturn)) {
+					invalidMessage = "Warning: The DHN return temperature needs to be lower than the DHN supply temperature.";
+				}
+
+                    // ✅ NEW: Production temperature already sufficient
+                if (prodTemp && dhnSupply && parseFloat(prodTemp) >= parseFloat(dhnSupply)) {
+                    invalidMessage = "Production temperature already sufficient — please use another calculation module or update your numbers.";
+                }
+
+			}
+
+			// Show warning if invalid
+			warning.innerText = invalidMessage;
+			warning.style.display = invalidMessage ? "block" : "none";
+
+			// Disable button if invalid
+			calculateButton.disabled = invalidMessage !== "";
+		}
+
+      
+        updateInputs("direct-use");
+		
+			function calculate() {
+			let selectedModule = document.querySelector('.module-option.selected');
+			
+			if (!selectedModule) {
+				alert("Please select a module first!");
+			return;
+			}
+
+			let moduleId = selectedModule.id;
+
+			if (moduleId === "option-direct-use") {
+				calculateDirectUse();
+			} else if (moduleId === "option-capacity-increase") {
+				calculateCapacityIncrease();
+			} else if (moduleId === "option-temperature-increase") {
+				calculateTemperatureIncrease();
+			}
+		}
+
+		function calculateDirectUse() {
+			let massFlow = parseFloat(document.getElementById("massFlow").value);
+			let prodTemp = parseFloat(document.getElementById("tempProd").value);
+			let injectTemp = parseFloat(document.getElementById("tempInject").value);
+			let dhnSupplyTemp = parseFloat(document.getElementById("tempDhnSupply").value);
+
+			// Example formula for Direct-Use (convert to MW)
+			let thermalCapacity = massFlow * (prodTemp - injectTemp) * 4.18 / 1000;
+
+			// ✅ Feasibility Check
+			let feasibilityMessage = "";
+			let feasibilityColor = "";
+
+			if (prodTemp >= dhnSupplyTemp) {
+				// ✅ Direct use is feasible → GREEN message
+				feasibilityMessage = "Your project can utilize the geothermal energy directly. If you want to increase the thermal capacity, you can investigate the integration of a large-scale heat pump with the capacity-increase module.";
+				feasibilityColor = "darkgreen";
+			} else {
+				// ❌ Direct use is NOT feasible → RED message
+				feasibilityMessage = "Based on the stated geothermal production temperature and required DHN supply temperature, a direct-use is not feasible. Thus, you need to apply a large-scale heat pump. Check out the temperature-increase module.";
+				feasibilityColor = "darkred";
+			}
+
+			// ✅ Display Results & Feasibility Check
+			document.getElementById("results").innerHTML = `
+				<p><strong>Thermal power output:</strong> ${thermalCapacity.toFixed(2)} MW</p>
+				<p style="color: ${feasibilityColor}; font-weight: bold;">${feasibilityMessage}</p>
+			`;
+}
+
+            const hpParamsVeryHigh = {
+                a: 1.9118,
+                b: -0.89094,
+                c: 0.67895,
+                d: 0.044189
+            };
+
+            function calculateCopVeryHigh(sourceTemp, sinkTemp) {
+            const a = hpParamsVeryHigh.a;
+            const b = hpParamsVeryHigh.b;
+            const c = hpParamsVeryHigh.c;
+            const d = hpParamsVeryHigh.d;
+
+            const deltaT = sinkTemp - sourceTemp;
+            const term1 = 0.44532*(sinkTemp+273.15)/deltaT
+            
+            return term1;
+        }
+
+        const COST_REGRESSION = {
+    1: 1320000,
+    3: 910000,
+    10: 710000,
+    20: 510000
+};
+
+function interpolateCost(sizeMW) {
+    const keys = Object.keys(COST_REGRESSION).map(Number).sort((a, b) => a - b);
+
+    if (sizeMW < 0) {
+        throw new Error(`The size of the heat pump ${sizeMW} must be positive.`);
+    }
+
+    if (COST_REGRESSION[sizeMW]) {
+        return COST_REGRESSION[sizeMW];
+    }
+
+    const pos = keys.findIndex(k => k > sizeMW);
+
+    if (pos === 0) {
+        throw new Error(`The size of the heat pump ${sizeMW} is too small.`);
+    }
+    if (pos === -1 || pos === keys.length) {
+        return COST_REGRESSION[keys[keys.length - 1]];
+    }
+
+    const x1 = keys[pos - 1];
+    const x2 = keys[pos];
+    const y1 = COST_REGRESSION[x1];
+    const y2 = COST_REGRESSION[x2];
+
+    return y1 + (y2 - y1) * ((sizeMW - x1) / (x2 - x1));
+}
+
+        function calculateCapacityIncrease() {
+    let massFlow = parseFloat(document.getElementById("massFlow").value);
+    let prodTemp = parseFloat(document.getElementById("tempProd").value);
+    let tempInjectwoHPField = document.getElementById("tempInjectwoHP").value;
+    let tempInject = parseFloat(document.getElementById("tempInject").value);
+    let supplyTemp = parseFloat(document.getElementById("tempDhnSupply").value);
+    let tempDhnReturn = parseFloat(document.getElementById("tempDhnReturn").value);
+    let tempInjectwoHP = tempInjectwoHPField === ""
+    ? tempDhnReturn + 2
+    : parseFloat(tempInjectwoHPField);
+
+    if (isNaN(prodTemp) || isNaN(supplyTemp)) {
+        document.getElementById("results").innerHTML = `<p style="color:red;">Please enter valid temperatures for production and DHN supply.</p>`;
+        return;
+    }
+    const Q_without_HP = massFlow * (prodTemp - tempInjectwoHP) * 4.18 / 1000; // MW
+    const Q_add = massFlow * (tempInjectwoHP - tempInject) * 4.18 / 1000; // MW
+    const cop = calculateCopVeryHigh(tempInject, supplyTemp);
+    const W_electric = Q_add / cop;
+    const Q_add_HP =  Q_add + W_electric;
+    const Q_total = Q_without_HP + Q_add + W_electric; // Useful heat at condenser
+
+    const specificCost = interpolateCost(Q_add_HP)*0.8; // €/MW
+    const investmentCost = Q_add * specificCost;
+
+    document.getElementById("results").innerHTML = `
+    <p><strong>Thermal capacity without heat pump:</strong> ${Q_without_HP.toFixed(2)} MW</p>
+    <p><strong>Additional thermal capacity of the heat pump:</strong> ${Q_add_HP.toFixed(2)} MW</p>
+    <p><strong>Total heat delivered to DHN:</strong> ${Q_total.toFixed(2)} MW</p>
+    <p><strong>Estimated COP of the heat pump:</strong> ${cop.toFixed(2)}</p>
+     <p><strong>Electrical input to heat pump:</strong> ${W_electric.toFixed(2)} MW</p>
+     <p><strong>Estimated specific cost of the heat pump:</strong> ${(specificCost / 1000).toFixed(0)}€ per kWth</p>
+    <p><strong>Estimated investment cost:</strong> ${investmentCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}€</p>
+`;
+}
+
+
+function calculateTemperatureIncrease() {
+    const massFlow = parseFloat(document.getElementById("massFlow").value);
+    const prodTemp = parseFloat(document.getElementById("tempProd").value);
+    const injectTemp = parseFloat(document.getElementById("tempInject").value);
+    const supplyTemp = parseFloat(document.getElementById("tempDhnSupply").value);
+
+    if (isNaN(massFlow) || isNaN(prodTemp) || isNaN(injectTemp) || isNaN(supplyTemp)) {
+        document.getElementById("results").innerHTML = `<p style="color:red;">Please fill in all required temperature and flow values correctly.</p>`;
+        return;
+    }
+
+    const Q_source = massFlow * (prodTemp - injectTemp) * 4.18 / 1000; // MW
+    const cop = calculateCopVeryHigh(injectTemp, supplyTemp);
+    const W_electric = Q_source / cop;
+    const Q_total = Q_source + W_electric;
+
+    const specificCost = interpolateCost(Q_total) * 0.8; // €/MW
+    const investmentCost = Q_source * specificCost;
+
+    document.getElementById("results").innerHTML = `
+        <p><strong>Total useful heat provided to DHN:</strong> ${Q_total.toFixed(2)} MW</p>
+        <p><strong>Estimated COP of the heat pump:</strong> ${cop.toFixed(2)}</p>
+        <p><strong>Electrical input to the heat pump:</strong> ${W_electric.toFixed(2)} MW</p>
+        <p><strong>Estimated specific cost of the heat pump:</strong> ${(specificCost / 1000).toFixed(0)} € per kWth</p>
+        <p><strong>Estimated investment cost:</strong> ${investmentCost.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</p>
+    `;
+}
+		
+    </script>
+</body>
+</html>
