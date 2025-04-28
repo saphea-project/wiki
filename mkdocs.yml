@@ -59,6 +59,9 @@ nav:
     - welcome-to-saphea.md
   - "Datasets":
     - pan-european-datasets.md
+    - "Single Market Uptake Hub":
+    - single-market-uptake-hub.md
+    - gamebook.md
   - "SAPHEA Tool Overview and User Guide":
     - key-capabilities.md
     - user-interface-navigation.md
@@ -75,7 +78,5 @@ nav:
       - cm-large-scale-geothermal-heat-pump.md
   - "How to Apply the SAPHEA Tool":
     - guideline-how-to-assess-geothermal-potential.md
-    - single-market-uptake-hub.md
-    - gamebook.md
   - "Learning Center":
     - training-material.md
