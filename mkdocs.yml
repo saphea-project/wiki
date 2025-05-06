@@ -76,7 +76,7 @@ nav:
       - cm-shallow-geothermal-potential.md
       - cm-geophires.md
       - cm-large-scale-geothermal-heat-pump.md
-  - "How to Apply the SAPHEA Tool":
-    - guideline-how-to-assess-geothermal-potential.md
+ # - "How to Apply the SAPHEA Tool":
+ #   - guideline-how-to-assess-geothermal-potential.md
   - "Learning Center":
     - training-material.md
